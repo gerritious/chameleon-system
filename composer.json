@@ -14,6 +14,7 @@
     "require": {
         "chameleon-system/chameleon-shop": "~6.3.0",
         "chameleon-system/chameleon-shop-theme-bundle": "~6.3.0",
+        "coreui/coreui": "^2.1",
         "incenteev/composer-parameter-handler": "~2.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "symfony/monolog-bundle": "~2.4|~3.0"
