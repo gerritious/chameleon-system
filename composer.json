@@ -58,5 +58,11 @@
         "incenteev-parameters": {
             "file": "app/config/parameters.yml"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/gerritious/chameleon-base.git"
+        }
+    ]
 }
