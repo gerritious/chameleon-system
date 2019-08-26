@@ -1,0 +1,3 @@
+imports:
+   - { resource: project-config.yml }
+

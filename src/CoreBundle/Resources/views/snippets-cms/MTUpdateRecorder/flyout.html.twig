@@ -1,0 +1,92 @@
+{% if userIsAllowedToView %}
+{% trans_default_domain constant('ChameleonSystem\\CoreBundle\\i18n\\TranslationConstants::DOMAIN_BACKEND') %}
+
+<script type="text/javascript">
+    function handleDbToggle(response)
+    {
+        var jsonresponse = $.parseJSON(response);
+        DisplayAjaxMessage(jsonresponse['toasterMessage']);
+        var enabled = jsonresponse['enabled'];
+        if(enabled) {
+            $('#dbLoggerButton').addClass('text-danger');
+        } else {
+            $('#dbLoggerButton').removeClass('text-danger');
+        }
+        $('#toggleDbRecordingButton').attr('value', enabled ? '{{'chameleon_system_core.db_logger.stop_recording'|trans({}, 'admin')}}' : '{{'chameleon_system_core.db_logger.start_recording'|trans({}, 'admin')}}');
+    }
+
+    /**
+     * @deprecated since 6.2.0 - no longer used.
+     */
+    function handleDbCounterUpdate(response)
+    {
+        var jsonresponse = $.parseJSON(response);
+        DisplayAjaxMessage(jsonresponse['toasterMessage']);
+    }
+
+    function handleTimestampUpdate(message)
+    {
+        var timestampElement = $("#currentTimestamp");
+        timestampElement.text(message);
+        timestampElement.fadeTo(1, 0.0).fadeTo(1000, 1.0);
+        $("#timestampFormField").attr('value', '');
+        CloseModalIFrameDialog();
+    }
+
+    /**
+     * @deprecated since 6.2.0 - no longer used.
+     */
+    function handleFilenameClick()
+    {
+    }
+
+    $(function() {
+        $('.dropdown-menu').find('form').click(function (e) {
+            e.stopPropagation();
+        });
+
+        /**
+         * @deprecated since 6.2.0 - no longer used.
+         */
+        function split( val ) {
+            return val.split( /,\s*/ );
+        }
+    });
+
+</script>
+
+    <li class="nav-item px-2 dropdown">
+        <a
+            class="nav-link dropdown-toggle {% if loggingActive %}text-danger{% endif %}"
+            id="dbLoggerButton"
+            data-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+        >
+            <i class="fas fa-database"></i>
+            <span class="d-md-down-none">
+                {{"chameleon_system_core.action.db_logger"|trans({}, 'admin') }}
+            </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" id="dbLoggerDropdown">
+            <div class="dropdown-item">
+                <form class="form-inline" action="" method="POST" accept-charset="UTF-8" id="UnixTimeStamp" onsubmit="return false;">
+                    <input type="hidden" name="module_fnc[{{ sModuleSpotName }}]" value="ExecuteAjaxCall"/>
+                    <input type="hidden" name="_fnc" value="UpdateUnixTimeStamp"/>
+                    <input type="hidden" id="timestampFormField" name="timestamp" value="" />
+                    <div class="input-group input-group-sm">
+                        <div class="form-control">{{ activeDbCounter }}-<span id="currentTimestamp">{{ currentUnixTimestamp }}</span>.inc.php</div>
+                        <input class="btn btn-sm input-group-append" type="button" value="{{ 'chameleon_system_core.action.new'|trans }}" onclick="PostAjaxForm('UnixTimeStamp', handleTimestampUpdate);return false;" />
+                    </div>
+                </form>
+                <form class="form-inline" action="" method="POST" accept-charset="UTF-8" id="ToggleRecording">
+                    <input type="hidden" name="module_fnc[{{ sModuleSpotName }}]" value="ExecuteAjaxCall"/>
+                    <input type="hidden" name="_fnc" value="SwitchLoggingState"/>
+                    <input class="btn btn-primary btn-sm" id="toggleDbRecordingButton" type="submit" value="{% if recordingActive %}{{ "chameleon_system_core.db_logger.stop_recording"|trans }}{% else %}{{ "chameleon_system_core.db_logger.start_recording"|trans }}{% endif %}" onclick="javascript:PostAjaxForm('ToggleRecording', handleDbToggle);return false;" />
+                </form>
+            </div>
+        </div>
+    </li>
+{% endif %}

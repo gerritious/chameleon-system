@@ -1,0 +1,25 @@
+$data = TCMSLogChange::createMigrationQueryData('{{ tableName }}', '{{ language }}')
+{% if fields|length > 0 %}
+  ->setFields([
+  {% for fieldName, value in fields %}
+    '{{ fieldName }}' => {{ value|raw }},
+  {% endfor %}
+])
+{% endif -%}
+{% if whereEquals|length > 0 %}
+  ->setWhereEquals([
+  {% for fieldName, value in whereEquals %}
+    '{{ fieldName }}' => {{ value|raw }},
+  {% endfor %}
+])
+{% endif -%}
+{% if whereExpressions|length > 0 %}
+  ->setWhereExpressions([
+  {% for expression in whereExpressions %}
+    new \Doctrine\Common\Collections\Expr\Comparison('{{ expression.field }}', '{{ expression.operator|raw }}', {{ expression.value.value|raw }}),
+  {% endfor %}
+  ])
+{% endif -%}
+;
+TCMSLogChange::{{ operationType }}(__LINE__, $data);
+
